@@ -24,6 +24,8 @@ prok is V
 how much is glob prok ?
 ```
 
+To exit, input `exit` as query, or press `ctrl` + `c`.
+
 ## Query Pattern
 
 Supported query patterns:

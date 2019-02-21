@@ -25,6 +25,13 @@ func Start() {
 	for scanner.Scan() {
 		input := scanner.Text()
 
+		switch input {
+		case "":
+			continue
+		case "exit":
+			return
+		}
+
 		var output string
 		var err error
 
