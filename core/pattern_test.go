@@ -90,3 +90,33 @@ func TestExecQuestionNumeric(t *testing.T) {
 		}
 	}
 }
+
+func TestExecQuestionValue(t *testing.T) {
+	type testCase struct {
+		InputCount    string
+		InputMaterial string
+		Output        float64
+	}
+
+	cases := []testCase{
+		testCase{"glob prok", "Silver", 68},
+		testCase{"glob prok", "Gold", 57800},
+		testCase{"glob prok", "Iron", 782},
+	}
+
+	for _, c := range cases {
+		input := fmt.Sprintf("how many Credits is %s %s ?", c.InputCount, c.InputMaterial)
+		output := fmt.Sprintf("%s %s is %.0f Credits", c.InputCount, c.InputMaterial, c.Output)
+
+		result, err := ExecQuestionValue(input)
+		if err != nil {
+			t.Errorf("Execute error for input: %s, error: %v\n", input, err)
+			return
+		}
+
+		if result != output {
+			t.Errorf("Execute failure, input: %s, expected: %s, got: %s.", input, output, result)
+			return
+		}
+	}
+}

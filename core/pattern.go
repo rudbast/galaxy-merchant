@@ -121,6 +121,30 @@ func ExecQuestionNumeric(text string) (string, error) {
 	return fmt.Sprintf("%s is %d", query, count), nil
 }
 
+// ExecQuestionValue parses given text & returns the decimal value of given material & roman numeral word.
 func ExecQuestionValue(text string) (string, error) {
-	return "", nil
+	if !patternQuestionValue.MatchString(text) {
+		return "", errors.New("pattern: input doesn't match rule")
+	}
+
+	query := strings.TrimPrefix(text, "how many Credits is ")
+	query = strings.TrimSuffix(query, " ?")
+	words := strings.Split(query, " ")
+
+	nums := words[:len(words)-1]
+	material := words[len(words)-1]
+
+	count, err := extractMaterialCount(nums)
+	if err != nil {
+		return "", errors.Wrap(err, "pattern: question value")
+	}
+
+	unit, ok := materialUnitMap[material]
+	if !ok {
+		return "", errors.New("pattern: unknown material")
+	}
+
+	value := float64(count) * unit
+
+	return fmt.Sprintf("%s %s is %.0f Credits", strings.Join(nums, " "), material, value), nil
 }
