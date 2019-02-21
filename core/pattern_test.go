@@ -21,7 +21,7 @@ func TestExecStatementNumeric(t *testing.T) {
 	for _, c := range cases {
 		input := fmt.Sprintf("%s is %c", c.Input, c.Output)
 
-		err := ExecStatementNumeric(input)
+		_, err := ExecStatementNumeric(input)
 		if err != nil {
 			t.Errorf("Execute error for input: %s, error: %v\n", input, err)
 			return
@@ -51,7 +51,7 @@ func TestExecStatementValue(t *testing.T) {
 	for _, c := range cases {
 		input := fmt.Sprintf("%s %s is %.0f Credits", c.InputCount, c.InputMaterial, c.OutputTotal)
 
-		err := ExecStatementValue(input)
+		_, err := ExecStatementValue(input)
 		if err != nil {
 			t.Errorf("Execute error for input: %s, error: %v\n", input, err)
 			return
