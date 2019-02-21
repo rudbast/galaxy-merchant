@@ -63,3 +63,30 @@ func TestExecStatementValue(t *testing.T) {
 		}
 	}
 }
+
+func TestExecQuestionNumeric(t *testing.T) {
+	type testCase struct {
+		Input  string
+		Output int64
+	}
+
+	cases := []testCase{
+		testCase{"pish tegj glob glob", 42},
+	}
+
+	for _, c := range cases {
+		input := fmt.Sprintf("how much is %s ?", c.Input)
+		output := fmt.Sprintf("pish tegj glob glob is %d", c.Output)
+
+		result, err := ExecQuestionNumeric(input)
+		if err != nil {
+			t.Errorf("Execute error for input: %s, error: %v\n", input, err)
+			return
+		}
+
+		if result != output {
+			t.Errorf("Execute failure, input: %s, expected: %s, got: %s.", input, output, result)
+			return
+		}
+	}
+}

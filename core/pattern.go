@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -102,8 +103,22 @@ func extractMaterialCount(words []string) (int64, error) {
 	return val, nil
 }
 
+// ExecQuestionNumeric parses given text & returns the decimal value of given roman numeral word.
 func ExecQuestionNumeric(text string) (string, error) {
-	return "", nil
+	if !patternQuestionNumeric.MatchString(text) {
+		return "", errors.New("pattern: input doesn't match rule")
+	}
+
+	query := strings.TrimPrefix(text, "how much is ")
+	query = strings.TrimSuffix(query, " ?")
+	words := strings.Split(query, " ")
+
+	count, err := extractMaterialCount(words)
+	if err != nil {
+		return "", errors.Wrap(err, "pattern: question numeric")
+	}
+
+	return fmt.Sprintf("%s is %d", query, count), nil
 }
 
 func ExecQuestionValue(text string) (string, error) {
