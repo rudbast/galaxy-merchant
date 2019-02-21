@@ -23,7 +23,7 @@ func TestExecStatementNumeric(t *testing.T) {
 
 		err := ExecStatementNumeric(input)
 		if err != nil {
-			t.Errorf("Execute error for input: %s, error: %v\n", c.Input, err)
+			t.Errorf("Execute error for input: %s, error: %v\n", input, err)
 			return
 		}
 

@@ -26,6 +26,9 @@ var (
 )
 
 // ExecStatementNumeric parses given text and assign a roman number to given input text.
+// Example:
+// - glob is I
+// - prok is V
 func ExecStatementNumeric(text string) error {
 	if !patternStatementNumeric.MatchString(text) {
 		return errors.New("pattern: input doesn't match rule")
@@ -34,7 +37,7 @@ func ExecStatementNumeric(text string) error {
 	parts := strings.Split(text, " is ")
 
 	if len(parts) != 2 {
-		return errors.New("pattern: illegal input")
+		return errors.New("pattern: invalid input length")
 	}
 
 	numberConversionMap[parts[0]] = rune(parts[1][0])
