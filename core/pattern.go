@@ -1,6 +1,10 @@
 package core
 
-import "regexp"
+import (
+	"errors"
+	"regexp"
+	"strings"
+)
 
 var (
 	// Input pattern rules.
@@ -18,7 +22,20 @@ var (
 	materialUnitMap = map[string]float64{}
 )
 
+// ExecStatementNumeric parses given text and assign a roman number to given input text.
 func ExecStatementNumeric(text string) error {
+	if !patternStatementNumeric.MatchString(text) {
+		return errors.New("pattern: input doesn't match rule")
+	}
+
+	parts := strings.Split(text, " is ")
+
+	if len(parts) != 2 {
+		return errors.New("pattern: illegal input")
+	}
+
+	numberConversionMap[parts[0]] = rune(parts[1][0])
+
 	return nil
 }
 
