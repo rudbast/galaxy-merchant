@@ -66,7 +66,7 @@ func ExecStatementValue(text string) error {
 
 	count, err := extractMaterialCount(numParts[:len(numParts)-1])
 	if err != nil {
-		return errors.Wrap(err, "pattern")
+		return errors.Wrap(err, "pattern: statement value")
 	}
 
 	credit, err := strconv.ParseFloat(strings.TrimSuffix(parts[1], " Credits"), 64)
