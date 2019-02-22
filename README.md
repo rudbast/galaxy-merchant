@@ -58,7 +58,11 @@ Supported query patterns:
 
     Example: `how many Credits is glob prok Silver ?`
 
+## Flow
+
+![flow](./flow.svg)
+
 ## TODO
 
-- [ ] Document system design
-- [ ] Improve query pattern matching ?
+- [x] Document system design
+- [x] Improve query pattern matching ?
