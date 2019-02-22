@@ -42,7 +42,7 @@ func Start() {
 		for _, fn := range inputFuncs {
 			output, err = fn(input)
 			if err != nil && err != ErrPatternMismatch {
-				fmt.Println("I have no idea what you are talking about")
+				fmt.Println("Error processing query:", err)
 				break
 
 			} else if err == nil {
@@ -53,7 +53,7 @@ func Start() {
 			}
 		}
 
-		if err != nil {
+		if err == ErrPatternMismatch {
 			fmt.Println("I have no idea what you are talking about")
 		}
 	}
