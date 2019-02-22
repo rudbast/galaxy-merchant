@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type execFunc func(text string) (string, error)
@@ -23,7 +24,10 @@ func Start() {
 	fmt.Println("Enter your queries:")
 
 	for scanner.Scan() {
-		input := scanner.Text()
+		input := strings.TrimSpace(scanner.Text())
+
+		// Remove multiple spaces.
+		input = strings.Join(strings.Fields(input), " ")
 
 		switch input {
 		case "":
