@@ -12,10 +12,10 @@ import (
 
 var (
 	// Input pattern rules.
-	patternStatementNumeric = regexp.MustCompile("\\w+\\sis\\s(I|V|X|L|C|D|M)")
-	patternStatementValue   = regexp.MustCompile(".+\\s\\w+\\sis\\s\\d+\\sCredits")
-	patternQuestionNumeric  = regexp.MustCompile("how much is .+\\s\\?")
-	patternQuestionValue    = regexp.MustCompile("how many Credits is .+\\s\\?")
+	patternStatementNumeric = regexp.MustCompile(`(\w+) is (I|V|X|L|C|D|M)`)
+	patternStatementValue   = regexp.MustCompile(`(.+) (\w+) is ([0-9]*\.?[0-9]+) [Cc]redits`)
+	patternQuestionNumeric  = regexp.MustCompile(`[Hh]ow (much|many) is (.+) \?`)
+	patternQuestionValue    = regexp.MustCompile(`[Hh]ow (much|many) [Cc]redits is (.+) (\w+) \?`)
 
 	// Numeral conversion mapper from input text to roman number.
 	numberConversionMap = map[string]rune{}
@@ -35,13 +35,11 @@ func ExecStatementNumeric(text string) (string, error) {
 		return "", ErrPatternMismatch
 	}
 
-	parts := strings.Split(text, " is ")
+	parts := patternStatementNumeric.FindStringSubmatch(text)
+	word := parts[1]
+	romanNum := parts[2][0]
 
-	if len(parts) != 2 {
-		return "", errors.New("pattern: invalid input length")
-	}
-
-	numberConversionMap[parts[0]] = rune(parts[1][0])
+	numberConversionMap[word] = rune(romanNum)
 
 	return "", nil
 }
@@ -55,21 +53,17 @@ func ExecStatementValue(text string) (string, error) {
 		return "", ErrPatternMismatch
 	}
 
-	parts := strings.Split(text, " is ")
+	parts := patternStatementValue.FindStringSubmatch(text)
+	numParts := strings.Split(parts[1], " ")
+	material := parts[2]
+	creditStr := parts[3]
 
-	if len(parts) != 2 {
-		return "", errors.New("pattern: invalid input length")
-	}
-
-	numParts := strings.Split(parts[0], " ")
-	material := numParts[len(numParts)-1]
-
-	count, err := extractMaterialCount(numParts[:len(numParts)-1])
+	count, err := extractMaterialCount(numParts)
 	if err != nil {
 		return "", errors.Wrap(err, "pattern: statement value")
 	}
 
-	credit, err := strconv.ParseFloat(strings.TrimSuffix(parts[1], " Credits"), 64)
+	credit, err := strconv.ParseFloat(creditStr, 64)
 	if err != nil {
 		return "", errors.Wrap(err, "pattern")
 	}
@@ -109,16 +103,15 @@ func ExecQuestionNumeric(text string) (string, error) {
 		return "", ErrPatternMismatch
 	}
 
-	query := strings.TrimPrefix(text, "how much is ")
-	query = strings.TrimSuffix(query, " ?")
-	words := strings.Split(query, " ")
+	parts := patternQuestionNumeric.FindStringSubmatch(text)
+	words := parts[2]
 
-	count, err := extractMaterialCount(words)
+	count, err := extractMaterialCount(strings.Split(words, " "))
 	if err != nil {
 		return "", errors.Wrap(err, "pattern: question numeric")
 	}
 
-	return fmt.Sprintf("%s is %d", query, count), nil
+	return fmt.Sprintf("%s is %d", words, count), nil
 }
 
 // ExecQuestionValue parses given text & returns the decimal value of given material & roman numeral word.
@@ -127,14 +120,11 @@ func ExecQuestionValue(text string) (string, error) {
 		return "", ErrPatternMismatch
 	}
 
-	query := strings.TrimPrefix(text, "how many Credits is ")
-	query = strings.TrimSuffix(query, " ?")
-	words := strings.Split(query, " ")
+	parts := patternQuestionValue.FindStringSubmatch(text)
+	words := parts[2]
+	material := parts[3]
 
-	nums := words[:len(words)-1]
-	material := words[len(words)-1]
-
-	count, err := extractMaterialCount(nums)
+	count, err := extractMaterialCount(strings.Split(words, " "))
 	if err != nil {
 		return "", errors.Wrap(err, "pattern: question value")
 	}
@@ -146,5 +136,5 @@ func ExecQuestionValue(text string) (string, error) {
 
 	value := float64(count) * unit
 
-	return fmt.Sprintf("%s %s is %.0f Credits", strings.Join(nums, " "), material, value), nil
+	return fmt.Sprintf("%s %s is %.0f Credits", words, material, value), nil
 }
