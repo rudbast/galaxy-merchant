@@ -12,10 +12,10 @@ import (
 
 var (
 	// Input pattern rules.
-	patternStatementNumeric = regexp.MustCompile(`(\w+) is (I|V|X|L|C|D|M)`)
-	patternStatementValue   = regexp.MustCompile(`(.+) (\w+) is ([0-9]*\.?[0-9]+) [Cc]redits`)
-	patternQuestionNumeric  = regexp.MustCompile(`[Hh]ow (much|many) is (.+) \?`)
-	patternQuestionValue    = regexp.MustCompile(`[Hh]ow (much|many) [Cc]redits is (.+) (\w+) \?`)
+	patternStatementNumeric = regexp.MustCompile(`^(\w+) is (I|V|X|L|C|D|M)$`)
+	patternStatementValue   = regexp.MustCompile(`^(.+) (\w+) is ([0-9]*\.?[0-9]+) [Cc]redits$`)
+	patternQuestionNumeric  = regexp.MustCompile(`^[Hh]ow (much|many) is (.+) \?$`)
+	patternQuestionValue    = regexp.MustCompile(`^[Hh]ow (much|many) [Cc]redits is (.+) (\w+) \?$`)
 
 	// Numeral conversion mapper from input text to roman number.
 	numberConversionMap = map[string]rune{}
